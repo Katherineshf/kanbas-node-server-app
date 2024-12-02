@@ -13,8 +13,8 @@ const app = express();
 
 app.use(cors({
     credentials: true,
-    // origin: process.env.NETLIFY_URL || "http://localhost:3000",
-    origin: 'https://singular-marzipan-9747a2.netlify.app/'
+    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+    //origin: 'https://singular-marzipan-9747a2.netlify.app/'
 })); 
 const sessionOptions = {
     secret: process.env.SESSION_SECRET || "kanbas",
