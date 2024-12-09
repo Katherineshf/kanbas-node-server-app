@@ -2,20 +2,28 @@ import * as dao from "./dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function EnrollmentsRoutes(app) {
-    app.get("/api/courses", (req, res) => {
-        const enrolledCourses = dao.findEnrolledForUsers(userId, courseId);
-        res.send(enrolledCourses);
+    app.post("/api/enrollments", async (req, res) => {
+        const { userId, courseId } = req.body;
+        await enrollmentDao.enrollUserInCourse(userId, courseId);
+        const updatedEnrollments = await enrollmentsDao.findCoursesForUser(userId);
+        res.status(201).json(updatedEnrollments);
     });
-    app.delete("/api/courses/:courseId/unenroll", (req, res) => {
-        const {courseId} = req.params;
-        const {userId} = req.params;
-        const status = dao.unenrollUserInCourse(userId, courseId);
-        res.send(status);
+
+    app.delete("/api/enrollments", async (req, res) => {
+        const { userId, courseId } = req.body;
+        await enrollmentDao.unenrollUserFromCourse(userId, courseId);
+        const updatedEnrollments = await enrollmentsDao.findCoursesForUser(userId);
+        res.status(200).json(updatedEnrollments);
     });
-    app.put("/api/courses/:courseId/enroll", (req, res) => {
-        const {courseId} = req.params;
-        const {userId} = req.params;
-        const status = dao.enrollUserInCourse(userId, courseId);
-        res.send(status);
+
+    app.get("/api/enrollments/:userId", async (req, res) => {
+        const { userId } = req.params;
+        const enrollments = await enrollmentsDao.findCoursesForUser(userId);
+        res.json(enrollments);
+    });
+
+    app.get("/api/courses", async (req, res) => {
+        const allCourses = await enrollmentsDao.findAllCourses();
+        res.json(allCourses);
     });
 }
