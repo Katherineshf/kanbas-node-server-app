@@ -1,29 +1,24 @@
 import Database from "../Database/index.js";
+
+export function createAssignments(assignments) {
+    const newAssignments = { ...assignments, _id: Date.now().toString() };
+    Database.assignments = [...Database.assignments, newAssignments];
+    return newAssignments;
+  }
+  
 export function findAssignmentsForCourse(courseId) {
-    const {assignments} = Database;
-    return assignments.filter((assignment) => assignment.course === courseId);
+  const { assignments } = Database;
+  return assignments.filter((assignments) => assignments.course === courseId);
 }
-export function createAssignment(assignment) {
-    const newAssignment = {...assignment, _id: Date.now().toString()};
-    Database.assignments = [...Database.assignments, newAssignment];
-    return newAssignment;
-}
+
 export function deleteAssignment(assignmentId) {
-    const {assignments} = Database;
+    const { assignments } = Database;
     Database.assignments = assignments.filter((assignment) => assignment._id !== assignmentId);
 }
+
 export function updateAssignment(assignmentId, assignmentUpdates) {
-    const {assignments} = Database;
-    const index = assignments.findIndex(
-        (assignment) => assignment._id === assignmentId
-    );
-    if (index === -1) {
-        return null;
-    }
-    const updatedAssignment = {
-        ...assignments[index],
-        ...assignmentUpdates
-    };
-    Database.assignments[index] = updatedAssignment;
-    return updatedAssignment;
+    const { assignments } = Database;
+    const assignment = assignments.find((assignment) => assignment._id === assignmentId);
+    Object.assign(assignment, assignmentUpdates);
+    return assignment;
 }
